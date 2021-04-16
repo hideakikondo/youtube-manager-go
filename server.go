@@ -1,10 +1,15 @@
 package main
 
 import (
-	"github.com/labstack/echo"
+    "github.com/hideakikondo/youtube-manager-go/routes"
+    "github.com/labstack/echo"
 )
 
 func main() {
-	e := echo.New()
-	e.Logger.Fatal(e.Start(":8080"))
+    e := echo.New()
+    // Routes
+    routes.Init(e)
+
+    // Start server
+    e.Logger.Fatal(e.Start(":8080"))
 }
