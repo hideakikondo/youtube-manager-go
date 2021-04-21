@@ -18,13 +18,18 @@ func FetchMostPopularVideos() echo.HandlerFunc {
 		ctx := context.Background()
 		yts, err := youtube.NewService(ctx, option.WithAPIKey(key))
 		if err != nil {
-			logrus.Fatalf("Error  creating new Youtube service: %v", err)
+			logrus.Fatalf("Error creating new Youtube service: %v", err)
 		}
 
 		call := yts.Videos.
 			List([]string{"id,snippet"}).
 			Chart("mostPopular").
 			MaxResults(3)
+
+		pageToken := c.QueryParam("pageToken")
+		if len(pageToken) > 0 {
+			call = call.PageToken(pageToken)
+		}
 
 		res, err := call.Do()
 		if err != nil {
