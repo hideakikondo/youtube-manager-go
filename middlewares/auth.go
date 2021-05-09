@@ -36,3 +36,20 @@ func FirebaseGuard() echo.MiddlewareFunc {
 		}		
 	}
 }
+
+func FirebaseAuth() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			authClient := c.Get("firebase").(*auth.Client)
+			jwtToken, _ := verifyFirebaseIDToken(c, authClient)
+
+			c.Set("auth", jwtToken)
+
+			if err := next(c); err != nil {
+				return err
+			}
+
+			return nil
+		}
+	}
+}
